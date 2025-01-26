@@ -169,6 +169,50 @@ local function toggleLines()
 	end
 end
 
+-- Функция для удаления всех объектов (ESP, Ники, HP, Линии) при смерти игрока
+local function onPlayerDeath()
+	-- Удаляем все элементы
+	espEnabled = false
+	nameEnabled = false
+	hpEnabled = false
+	lineEnabled = false
+
+	-- Удаляем все объекты, связанные с ESP, ником, HP и линиями
+	for _, targetPlayer in ipairs(players:GetPlayers()) do
+		if targetPlayer ~= player then
+			local character = targetPlayer.Character
+			if character then
+				-- Удаляем все обводки ESP
+				for _, part in pairs(character:GetChildren()) do
+					if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
+						part.ESPHighlight:Destroy()
+					end
+				end
+				-- Удаляем имя
+				if character.Head:FindFirstChild("NameTag") then
+					character.Head.NameTag:Destroy()
+				end
+				-- Удаляем HP
+				if character.Head:FindFirstChild("HPBar") then
+					character.Head.HPBar:Destroy()
+				end
+				-- Удаляем линии
+				for _, line in pairs(lines) do
+					line:Destroy()
+				end
+			end
+		end
+	end
+end
+
+-- Слушаем событие смерти игрока
+player.CharacterAdded:Connect(function(character)
+	-- Прячем все элементы при смерти
+	onPlayerDeath()
+	-- Привязываем обработчик к событию смерти
+	character:WaitForChild("Humanoid").Died:Connect(onPlayerDeath)
+end)
+
 -- Кнопки для управления
 local buttons = {
 	{Text = "Esp", Callback = toggleESP, Position = UDim2.new(0, 10, 0, 10)},
