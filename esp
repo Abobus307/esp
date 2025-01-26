@@ -1,0 +1,252 @@
+-- Получаем ссылку на локального игрока
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
+
+-- Создаем основное меню
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 350, 0, 400)
+frame.Position = UDim2.new(0.5, -175, 0.5, -200)  -- Меню теперь в центре экрана
+frame.BackgroundColor3 = Color3.fromRGB(34, 34, 34)
+frame.BackgroundTransparency = 0.1
+frame.BorderSizePixel = 0
+frame.ClipsDescendants = true
+frame.Parent = screenGui
+frame.Visible = false
+
+-- Плавное появление меню
+frame:TweenPosition(UDim2.new(0.5, -175, 0.5, -200), "Out", "Bounce", 0.5, true)
+
+-- Закругленные углы
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 15)
+corner.Parent = frame
+
+-- Инициализация таблиц для ESP, имен и HP
+local espParts = {}
+local nameParts = {}
+local hpLabels = {}
+
+-- Переменные для включения/выключения
+local espEnabled = false
+local nameEnabled = false
+local hpEnabled = false
+
+-- Функция для включения/выключения ESP
+local function toggleESP()
+	espEnabled = not espEnabled
+	if espEnabled then
+		-- Включаем ESP для всех частей тела
+		for _, v in pairs(game.Players:GetPlayers()) do
+			if v.Character and v.Character:FindFirstChild("Humanoid") then
+				local humanoid = v.Character.Humanoid
+
+				-- ESP Box для частей тела
+				local function createESPPart(part, color)
+					local espBox = Instance.new("Frame")
+					espBox.Size = UDim2.new(0, 100, 0, 100)
+					espBox.BackgroundColor3 = color
+					espBox.BackgroundTransparency = 0.5
+					espBox.BorderSizePixel = 0
+					espBox.Parent = screenGui
+					table.insert(espParts, espBox)
+
+					-- Отслеживание движения
+					game:GetService("RunService").RenderStepped:Connect(function()
+						local camera = game:GetService("Workspace").CurrentCamera
+						local screenPos, onScreen = camera:WorldToScreenPoint(part.Position)
+						if onScreen then
+							espBox.Position = UDim2.new(0, screenPos.X - 50, 0, screenPos.Y - 50)
+						end
+					end)
+				end
+
+				-- Создаем ESP для различных частей тела
+				if v.Character:FindFirstChild("Head") then
+					createESPPart(v.Character.Head, Color3.fromRGB(255, 0, 0))  -- Красный для головы
+				end
+				if v.Character:FindFirstChild("Torso") then
+					createESPPart(v.Character.Torso, Color3.fromRGB(0, 255, 0))  -- Зеленый для торса
+				end
+				if v.Character:FindFirstChild("LeftLeg") then
+					createESPPart(v.Character.LeftLeg, Color3.fromRGB(0, 0, 255))  -- Синий для левой ноги
+				end
+				if v.Character:FindFirstChild("RightLeg") then
+					createESPPart(v.Character.RightLeg, Color3.fromRGB(0, 255, 255))  -- Голубой для правой ноги
+				end
+				if v.Character:FindFirstChild("LeftArm") then
+					createESPPart(v.Character.LeftArm, Color3.fromRGB(255, 255, 0))  -- Желтый для левой руки
+				end
+				if v.Character:FindFirstChild("RightArm") then
+					createESPPart(v.Character.RightArm, Color3.fromRGB(255, 165, 0))  -- Оранжевый для правой руки
+				end
+			end
+		end
+	else
+		-- Отключаем ESP
+		for _, espBox in pairs(espParts) do
+			espBox:Destroy()
+		end
+		espParts = {}
+	end
+end
+
+-- Функция для включения/выключения отображения ника
+local function toggleName()
+	nameEnabled = not nameEnabled
+	if nameEnabled then
+		-- Включаем отображение ника
+		for _, v in pairs(game.Players:GetPlayers()) do
+			if v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+				local humanoidRootPart = v.Character.HumanoidRootPart
+
+				local billboardGui = Instance.new("BillboardGui")
+				billboardGui.Adornee = humanoidRootPart
+				billboardGui.Size = UDim2.new(0, 100, 0, 50)
+				billboardGui.StudsOffset = Vector3.new(0, 2, 0)
+				billboardGui.Parent = screenGui
+				billboardGui.AlwaysOnTop = true
+
+				local nameLabel = Instance.new("TextLabel")
+				nameLabel.Text = v.Name
+				nameLabel.Size = UDim2.new(1, 0, 1, 0)
+				nameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Белый текст
+				nameLabel.BackgroundTransparency = 1
+				nameLabel.TextSize = 16
+				nameLabel.TextXAlignment = Enum.TextXAlignment.Center
+				nameLabel.TextStrokeTransparency = 0.8
+				nameLabel.TextTransparency = 0.3
+				nameLabel.Parent = billboardGui
+
+				table.insert(nameParts, billboardGui)
+			end
+		end
+	else
+		-- Отключаем отображение ника
+		for _, v in pairs(nameParts) do
+			v:Destroy()
+		end
+		nameParts = {}
+	end
+end
+
+-- Функция для включения/выключения отображения HP
+local function toggleHP()
+	hpEnabled = not hpEnabled
+	if hpEnabled then
+		-- Включаем отображение HP
+		for _, v in pairs(game.Players:GetPlayers()) do
+			if v.Character and v.Character:FindFirstChild("Humanoid") then
+				local humanoid = v.Character.Humanoid
+
+				local hpBillboard = Instance.new("BillboardGui")
+				hpBillboard.Adornee = humanoid.Parent.HumanoidRootPart
+				hpBillboard.Size = UDim2.new(0, 100, 0, 50)
+				hpBillboard.StudsOffset = Vector3.new(0, 1.4, 0)
+				hpBillboard.Parent = screenGui
+				hpBillboard.AlwaysOnTop = true
+
+				local hpLabel = Instance.new("TextLabel")
+				hpLabel.Text = "HP: " .. math.floor(humanoid.Health)
+				hpLabel.Size = UDim2.new(1, 0, 1, 0)
+				hpLabel.TextColor3 = Color3.fromRGB(39, 255, 6)  -- Зеленый цвет
+				hpLabel.BackgroundTransparency = 1
+				hpLabel.TextSize = 14
+				hpLabel.TextXAlignment = Enum.TextXAlignment.Center
+				hpLabel.TextStrokeTransparency = 0.8
+				hpLabel.TextTransparency = 0.3
+				hpLabel.Parent = hpBillboard
+
+				humanoid.HealthChanged:Connect(function()
+					hpLabel.Text = "HP: " .. math.floor(humanoid.Health)
+				end)
+
+				table.insert(hpLabels, hpBillboard)
+			end
+		end
+	else
+		-- Отключаем отображение HP
+		for _, label in pairs(hpLabels) do
+			label:Destroy()
+		end
+		hpLabels = {}
+	end
+end
+
+-- Функция для открытия/закрытия меню
+local function toggleMenu()
+	frame.Visible = not frame.Visible
+end
+
+-- Создаем кнопку для перемещения GUI
+local dragging = false
+local dragInput, dragStart, startPos
+
+-- Функция для перемещения GUI
+frame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = frame.Position
+	end
+end)
+
+frame.InputChanged:Connect(function(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+end)
+
+frame.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+
+-- Кнопка для открытия/закрытия меню
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 150, 0, 50)
+toggleButton.Position = UDim2.new(1, -250, 0.5, -25)  -- Кнопка справа, но не у самого края
+toggleButton.Text = "Меню (Esp)"
+toggleButton.TextSize = 16
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+toggleButton.BorderSizePixel = 0
+toggleButton.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Черный текст
+toggleButton.TextStrokeTransparency = 0.7
+toggleButton.Parent = screenGui
+toggleButton.MouseButton1Click:Connect(toggleMenu)
+
+-- Разделяем кнопки для ESP, HP и имени, делаем разные цвета
+local buttonESP = Instance.new("TextButton")
+buttonESP.Size = UDim2.new(0, 260, 0, 50)
+buttonESP.Position = UDim2.new(0.5, -130, 0, 40)
+buttonESP.Text = "Включить ESP"
+buttonESP.BackgroundColor3 = Color3.fromRGB(255, 0, 0)  -- Красный цвет
+buttonESP.BorderSizePixel = 0
+buttonESP.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Черный текст
+buttonESP.TextStrokeTransparency = 0.8
+buttonESP.Parent = frame
+buttonESP.MouseButton1Click:Connect(toggleESP)
+
+local buttonName = Instance.new("TextButton")
+buttonName.Size = UDim2.new(0, 260, 0, 50)
+buttonName.Position = UDim2.new(0.5, -130, 0, 100)
+buttonName.Text = "Включить ник"
+buttonName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Белый цвет
+buttonName.BorderSizePixel = 0
+buttonName.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Черный текст
+buttonName.TextStrokeTransparency = 0.8
+buttonName.Parent = frame
+buttonName.MouseButton1Click:Connect(toggleName)
+
+local buttonHP = Instance.new("TextButton")
+buttonHP.Size = UDim2.new(0, 260, 0, 50)
+buttonHP.Position = UDim2.new(0.5, -130, 0, 160)
+buttonHP.Text = "Включить HP"
+buttonHP.BackgroundColor3 = Color3.fromRGB(39, 255, 6)  -- Зеленый цвет
+buttonHP.BorderSizePixel = 0
+buttonHP.TextColor3 = Color3.fromRGB(0, 0, 0)  -- Черный текст
+buttonHP.TextStrokeTransparency = 0.8
+buttonHP.Parent = frame
+buttonHP.MouseButton1Click:Connect(toggleHP)
