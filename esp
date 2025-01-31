@@ -12,19 +12,34 @@ local function sendWebhook(message)
         ["Content-Type"] = "application/json"
     }
 
-    HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson, false, headers)
+    -- Важно использовать pcall для безопасного выполнения запроса
+    local success, response = pcall(function()
+        HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
+    end)
+
+    if success then
+        print("Webhook отправлен успешно.")
+    else
+        warn("Ошибка отправки вебхука: " .. response)
+    end
 end
 
--- Сбор информации о пользователе и игре
-local player = game.Players.LocalPlayer
-local playerName = player.Name
-local playerId = player.UserId
-local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
-local gameId = game.PlaceId
-local userAccountAge = player.AccountAge
-local userLocation = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
+-- Функция для получения информации о пользователе
+local function getPlayerInfo()
+    local player = game.Players.LocalPlayer
+    local playerName = player.Name
+    local playerId = player.UserId
+    local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+    local gameId = game.PlaceId
+    local userAccountAge = player.AccountAge
+    local userLocation = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
 
--- Создание сообщения для отправки
+    return playerName, playerId, gameName, gameId, userAccountAge, userLocation
+end
+
+-- Сбор данных и отправка их в Discord
+local playerName, playerId, gameName, gameId, userAccountAge, userLocation = getPlayerInfo()
+
 local message = string.format([[
     Скрипт был инжектирован!
     Ник игрока: %s
@@ -35,7 +50,7 @@ local message = string.format([[
     Локация игрока: %s
 ]], playerName, playerId, gameName, gameId, userAccountAge, tostring(userLocation))
 
--- Отправка сообщения в Discord
+-- Отправка собранных данных в Discord
 sendWebhook(message)
 
 -- Получаем ссылки на локального игрока и игроков
