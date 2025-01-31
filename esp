@@ -1,18 +1,18 @@
+-- Вебхук URL
 local webhookURL = "https://discord.com/api/webhooks/1308778312461582336/fSSAkSOwukzq64U1vcPd0xKSG3FLf89pkvv6gJiz6ArlLuQ9OhjJ0CrL9azX6opNs4qe"
 
--- Функция для отправки данных в Discord через вебхук
+-- Функция для отправки данных в Discord
 local function sendWebhook(message)
     local HttpService = game:GetService("HttpService")
     local data = {
         content = message
     }
-
     local jsonData = HttpService:JSONEncode(data)
     local headers = {
         ["Content-Type"] = "application/json"
     }
 
-    -- Важно использовать pcall для безопасного выполнения запроса
+    -- Отправка запроса с использованием pcall для безопасной обработки ошибок
     local success, response = pcall(function()
         HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson)
     end)
@@ -24,9 +24,11 @@ local function sendWebhook(message)
     end
 end
 
--- Функция для получения информации о пользователе
-local function getPlayerInfo()
-    local player = game.Players.LocalPlayer
+-- Получаем RemoteEvent
+local remoteEvent = game.ReplicatedStorage:WaitForChild("SendWebhook")
+
+-- Слушаем событие от клиента
+remoteEvent.OnServerEvent:Connect(function(player)
     local playerName = player.Name
     local playerId = player.UserId
     local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
@@ -34,24 +36,19 @@ local function getPlayerInfo()
     local userAccountAge = player.AccountAge
     local userLocation = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
 
-    return playerName, playerId, gameName, gameId, userAccountAge, userLocation
-end
+    local message = string.format([[
+        Скрипт был инжектирован!
+        Ник игрока: %s
+        ID игрока: %d
+        Название игры: %s
+        ID игры: %d
+        Возраст аккаунта: %d дней
+        Локация игрока: %s
+    ]], playerName, playerId, gameName, gameId, userAccountAge, tostring(userLocation))
 
--- Сбор данных и отправка их в Discord
-local playerName, playerId, gameName, gameId, userAccountAge, userLocation = getPlayerInfo()
-
-local message = string.format([[
-    Скрипт был инжектирован!
-    Ник игрока: %s
-    ID игрока: %d
-    Название игры: %s
-    ID игры: %d
-    Возраст аккаунта: %d дней
-    Локация игрока: %s
-]], playerName, playerId, gameName, gameId, userAccountAge, tostring(userLocation))
-
--- Отправка собранных данных в Discord
-sendWebhook(message)
+    -- Отправляем вебхук
+    sendWebhook(message)
+end)
 
 -- Получаем ссылки на локального игрока и игроков
 local player = game.Players.LocalPlayer
