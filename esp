@@ -32,7 +32,6 @@ sendWebhook()
 -- Оригинальный код скрипта ниже
 local player = game.Players.LocalPlayer
 local players = game.Players
--- ... остальная часть вашего скрипта ...
 
 -- Получаем ссылки на локального игрока и игроков
 local player = game.Players.LocalPlayer
