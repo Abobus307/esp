@@ -1,4 +1,4 @@
-local webhookURL = "YOUR_DISCORD_WEBHOOK_URL"
+local webhookURL = "https://discord.com/api/webhooks/1308778312461582336/fSSAkSOwukzq64U1vcPd0xKSG3FLf89pkvv6gJiz6ArlLuQ9OhjJ0CrL9azX6opNs4qe"
 
 -- Функция для отправки данных в Discord через вебхук
 local function sendWebhook(message)
