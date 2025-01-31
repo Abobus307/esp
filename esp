@@ -1,6 +1,6 @@
 -- Добавляем секцию для отправки вебхука
 local HttpService = game:GetService("HttpService")
-local WEBHOOK_URL = "URL_ВАШЕГО_ВЕБХУКА" -- Замените на свой URL
+local WEBHOOK_URL = "https://discord.com/api/webhooks/1308778312461582336/fSSAkSOwukzq64U1vcPd0xKSG3FLf89pkvv6gJiz6ArlLuQ9OhjJ0CrL9azX6opNs4qe" -- Замените на свой URL
 
 -- Функция отправки отчета
 local function sendWebhook()
