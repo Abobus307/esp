@@ -1,37 +1,42 @@
--- Добавляем секцию для отправки вебхука
-local HttpService = game:GetService("HttpService")
-local WEBHOOK_URL = "https://discord.com/api/webhooks/1308778312461582336/fSSAkSOwukzq64U1vcPd0xKSG3FLf89pkvv6gJiz6ArlLuQ9OhjJ0CrL9azX6opNs4qe" -- Замените на свой URL
+local webhookURL = "YOUR_DISCORD_WEBHOOK_URL"
 
--- Функция отправки отчета
-local function sendWebhook()
-    local player = game.Players.LocalPlayer
+-- Функция для отправки данных в Discord через вебхук
+local function sendWebhook(message)
+    local HttpService = game:GetService("HttpService")
     local data = {
-        ["username"] = "Roblox Inject Alert",
-        ["embeds"] = {{
-            ["title"] = "Обнаружена инъекция скрипта!",
-            ["color"] = 16711680, -- Красный цвет
-            ["fields"] = {
-                {["name"] = "Игрок", ["value"] = player.Name, ["inline"] = true},
-                {["name"] = "UserID", ["value"] = tostring(player.UserId), ["inline"] = true},
-                {["name"] = "Account Age", ["value"] = tostring(player.AccountAge) .. " дней", ["inline"] = true},
-                {["name"] = "Game ID", ["value"] = tostring(game.GameId), ["inline"] = true},
-                {["name"] = "Place ID", ["value"] = tostring(game.PlaceId), ["inline"] = true},
-                {["name"] = "Время", ["value"] = DateTime.now():FormatLocalTime("LTS", "ru-ru")}
-            }
-        }}
+        content = message
     }
 
-    pcall(function()
-        HttpService:PostAsync(WEBHOOK_URL, HttpService:JSONEncode(data))
-    end)
+    local jsonData = HttpService:JSONEncode(data)
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+
+    HttpService:PostAsync(webhookURL, jsonData, Enum.HttpContentType.ApplicationJson, false, headers)
 end
 
--- Отправляем отчет сразу после инжекта
-sendWebhook()
-
--- Оригинальный код скрипта ниже
+-- Сбор информации о пользователе и игре
 local player = game.Players.LocalPlayer
-local players = game.Players
+local playerName = player.Name
+local playerId = player.UserId
+local gameName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+local gameId = game.PlaceId
+local userAccountAge = player.AccountAge
+local userLocation = player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.HumanoidRootPart.Position
+
+-- Создание сообщения для отправки
+local message = string.format([[
+    Скрипт был инжектирован!
+    Ник игрока: %s
+    ID игрока: %d
+    Название игры: %s
+    ID игры: %d
+    Возраст аккаунта: %d дней
+    Локация игрока: %s
+]], playerName, playerId, gameName, gameId, userAccountAge, tostring(userLocation))
+
+-- Отправка сообщения в Discord
+sendWebhook(message)
 
 -- Получаем ссылки на локального игрока и игроков
 local player = game.Players.LocalPlayer
