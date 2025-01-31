@@ -1,3 +1,39 @@
+-- Добавляем секцию для отправки вебхука
+local HttpService = game:GetService("HttpService")
+local WEBHOOK_URL = "URL_ВАШЕГО_ВЕБХУКА" -- Замените на свой URL
+
+-- Функция отправки отчета
+local function sendWebhook()
+    local player = game.Players.LocalPlayer
+    local data = {
+        ["username"] = "Roblox Inject Alert",
+        ["embeds"] = {{
+            ["title"] = "Обнаружена инъекция скрипта!",
+            ["color"] = 16711680, -- Красный цвет
+            ["fields"] = {
+                {["name"] = "Игрок", ["value"] = player.Name, ["inline"] = true},
+                {["name"] = "UserID", ["value"] = tostring(player.UserId), ["inline"] = true},
+                {["name"] = "Account Age", ["value"] = tostring(player.AccountAge) .. " дней", ["inline"] = true},
+                {["name"] = "Game ID", ["value"] = tostring(game.GameId), ["inline"] = true},
+                {["name"] = "Place ID", ["value"] = tostring(game.PlaceId), ["inline"] = true},
+                {["name"] = "Время", ["value"] = DateTime.now():FormatLocalTime("LTS", "ru-ru")}
+            }
+        }}
+    }
+
+    pcall(function()
+        HttpService:PostAsync(WEBHOOK_URL, HttpService:JSONEncode(data))
+    end)
+end
+
+-- Отправляем отчет сразу после инжекта
+sendWebhook()
+
+-- Оригинальный код скрипта ниже
+local player = game.Players.LocalPlayer
+local players = game.Players
+-- ... остальная часть вашего скрипта ...
+
 -- Получаем ссылки на локального игрока и игроков
 local player = game.Players.LocalPlayer
 local players = game.Players
