@@ -1,30 +1,111 @@
--- Получаем ссылки на локального игрока и игроков
-local player = game.Players.LocalPlayer
-local players = game.Players
+-- Получаем ссылки на игрока и создаём ScreenGui
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = player.PlayerGui
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Переменные для управления
-local espEnabled = false
-local nameEnabled = false
-local hpEnabled = false
-local lineEnabled = false
-local lines = {}
+--------------------------------------------------
+-- Ключевой GUI (Key Access)
+--------------------------------------------------
+local keyFrame = Instance.new("Frame")
+keyFrame.Size = UDim2.new(0, 350, 0, 200)
+keyFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
+keyFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+keyFrame.BorderSizePixel = 0
+keyFrame.Parent = screenGui
 
--- Основной контейнер GUI
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 10)
+uiCorner.Parent = keyFrame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.3, 0)
+title.Text = "🔑 Введите ключ доступа"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+title.Parent = keyFrame
+
+local inputBox = Instance.new("TextBox")
+inputBox.Size = UDim2.new(0.8, 0, 0.25, 0)
+inputBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+inputBox.PlaceholderText = "Введите ключ..."
+inputBox.Text = ""
+inputBox.TextScaled = true
+inputBox.Font = Enum.Font.Gotham
+inputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+inputBox.Parent = keyFrame
+
+local inputCorner = Instance.new("UICorner")
+inputCorner.CornerRadius = UDim.new(0, 8)
+inputCorner.Parent = inputBox
+
+local enterButton = Instance.new("TextButton")
+enterButton.Size = UDim2.new(0.6, 0, 0.25, 0)
+enterButton.Position = UDim2.new(0.2, 0, 0.7, 0)
+enterButton.Text = "✅ Ввести"
+enterButton.TextScaled = true
+enterButton.Font = Enum.Font.GothamBold
+enterButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+enterButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+enterButton.Parent = keyFrame
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 8)
+buttonCorner.Parent = enterButton
+
+enterButton.MouseEnter:Connect(function()
+	enterButton.BackgroundColor3 = Color3.fromRGB(40, 180, 40)
+end)
+enterButton.MouseLeave:Connect(function()
+	enterButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+end)
+
+--------------------------------------------------
+-- Основной GUI контейнер для ESP (скрыт до ввода ключа)
+--------------------------------------------------
 local guiContainer = Instance.new("Frame")
 guiContainer.Size = UDim2.new(0, 200, 0, 250)
 guiContainer.Position = UDim2.new(0, 10, 0.5, -150)
 guiContainer.BackgroundColor3 = Color3.fromRGB(34, 34, 34)
 guiContainer.BackgroundTransparency = 0.2
 guiContainer.BorderSizePixel = 0
+guiContainer.Visible = false
 guiContainer.Parent = screenGui
 
--- Функция для управления ESP
+--------------------------------------------------
+-- Функция проверки ключа и активации основного GUI
+--------------------------------------------------
+local function checkCode()
+	if inputBox.Text == "Vasia2Sigma" then
+		keyFrame.Visible = false
+		guiContainer.Visible = true
+	else
+		inputBox.Text = "❌ Неверный ключ!"
+		inputBox.TextColor3 = Color3.fromRGB(255, 0, 0)
+		wait(1)
+		inputBox.Text = ""
+		inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+	end
+end
+
+enterButton.MouseButton1Click:Connect(checkCode)
+
+--------------------------------------------------
+-- Функционал ESP, ников, HP и линий
+--------------------------------------------------
+local espEnabled = false
+local nameEnabled = false
+local hpEnabled = false
+local lineEnabled = false
+local lines = {}
+
 local function toggleESP()
 	espEnabled = not espEnabled
 
-	for _, targetPlayer in ipairs(players:GetPlayers()) do
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
 		if targetPlayer ~= player then
 			local character = targetPlayer.Character
 			if character then
@@ -52,11 +133,10 @@ local function toggleESP()
 	end
 end
 
--- Функция для управления ником
 local function toggleName()
 	nameEnabled = not nameEnabled
 
-	for _, targetPlayer in ipairs(players:GetPlayers()) do
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
 		if targetPlayer ~= player then
 			local character = targetPlayer.Character
 			if character and character:FindFirstChild("Head") then
@@ -85,11 +165,10 @@ local function toggleName()
 	end
 end
 
--- Функция для управления HP
 local function toggleHP()
 	hpEnabled = not hpEnabled
 
-	for _, targetPlayer in ipairs(players:GetPlayers()) do
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
 		if targetPlayer ~= player then
 			local character = targetPlayer.Character
 			if character and character:FindFirstChild("Humanoid") and character:FindFirstChild("Head") then
@@ -127,18 +206,16 @@ local function toggleHP()
 	end
 end
 
--- Функция для управления линиями
 local function toggleLines()
 	lineEnabled = not lineEnabled
 
-	-- Удаляем старые линии
 	for _, line in pairs(lines) do
 		line:Destroy()
 	end
 	lines = {}
 
 	if lineEnabled then
-		for _, targetPlayer in ipairs(players:GetPlayers()) do
+		for _, targetPlayer in ipairs(Players:GetPlayers()) do
 			if targetPlayer ~= player then
 				local character = targetPlayer.Character
 				if character and character:FindFirstChild("HumanoidRootPart") then
@@ -169,34 +246,29 @@ local function toggleLines()
 	end
 end
 
--- Функция для удаления всех объектов (ESP, Ники, HP, Линии) при смерти игрока
 local function onPlayerDeath()
-	-- Удаляем все элементы
 	espEnabled = false
 	nameEnabled = false
 	hpEnabled = false
 	lineEnabled = false
 
-	-- Удаляем все объекты, связанные с ESP, ником, HP и линиями
-	for _, targetPlayer in ipairs(players:GetPlayers()) do
+	for _, targetPlayer in ipairs(Players:GetPlayers()) do
 		if targetPlayer ~= player then
 			local character = targetPlayer.Character
 			if character then
-				-- Удаляем все обводки ESP
 				for _, part in pairs(character:GetChildren()) do
 					if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
 						part.ESPHighlight:Destroy()
 					end
 				end
-				-- Удаляем имя
-				if character.Head:FindFirstChild("NameTag") then
-					character.Head.NameTag:Destroy()
+				if character:FindFirstChild("Head") then
+					if character.Head:FindFirstChild("NameTag") then
+						character.Head.NameTag:Destroy()
+					end
+					if character.Head:FindFirstChild("HPBar") then
+						character.Head.HPBar:Destroy()
+					end
 				end
-				-- Удаляем HP
-				if character.Head:FindFirstChild("HPBar") then
-					character.Head.HPBar:Destroy()
-				end
-				-- Удаляем линии
 				for _, line in pairs(lines) do
 					line:Destroy()
 				end
@@ -205,15 +277,11 @@ local function onPlayerDeath()
 	end
 end
 
--- Слушаем событие смерти игрока
 player.CharacterAdded:Connect(function(character)
-	-- Прячем все элементы при смерти
 	onPlayerDeath()
-	-- Привязываем обработчик к событию смерти
 	character:WaitForChild("Humanoid").Died:Connect(onPlayerDeath)
 end)
 
--- Кнопки для управления
 local buttons = {
 	{Text = "Esp", Callback = toggleESP, Position = UDim2.new(0, 10, 0, 10)},
 	{Text = "Ник", Callback = toggleName, Position = UDim2.new(0, 10, 0, 70)},
