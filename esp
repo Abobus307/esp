@@ -5,11 +5,12 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = player:WaitForChild("PlayerGui")
 
 --------------------------------------------------
--- Ключевой GUI (Key Access)
+-- Ключевой GUI (Key Access) для ESP
 --------------------------------------------------
+-- Устанавливаем размер окна так, чтобы все элементы помещались
 local keyFrame = Instance.new("Frame")
-keyFrame.Size = UDim2.new(0, 350, 0, 200)
-keyFrame.Position = UDim2.new(0.5, -175, 0.5, -100)
+keyFrame.Size = UDim2.new(0, 350, 0, 260)
+keyFrame.Position = UDim2.new(0.5, -175, 0.5, -130)
 keyFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 keyFrame.BorderSizePixel = 0
 keyFrame.Parent = screenGui
@@ -20,6 +21,7 @@ uiCorner.Parent = keyFrame
 
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0.3, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
 title.Text = "🔑 Введите ключ доступа"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.BackgroundTransparency = 1
@@ -28,8 +30,8 @@ title.TextScaled = true
 title.Parent = keyFrame
 
 local inputBox = Instance.new("TextBox")
-inputBox.Size = UDim2.new(0.8, 0, 0.25, 0)
-inputBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+inputBox.Size = UDim2.new(0.8, 0, 0.2, 0)
+inputBox.Position = UDim2.new(0.1, 0, 0.35, 0)
 inputBox.PlaceholderText = "Введите ключ..."
 inputBox.Text = ""
 inputBox.TextScaled = true
@@ -42,9 +44,10 @@ local inputCorner = Instance.new("UICorner")
 inputCorner.CornerRadius = UDim.new(0, 8)
 inputCorner.Parent = inputBox
 
+-- Кнопка "Ввести" для проверки ключа
 local enterButton = Instance.new("TextButton")
-enterButton.Size = UDim2.new(0.6, 0, 0.25, 0)
-enterButton.Position = UDim2.new(0.2, 0, 0.7, 0)
+enterButton.Size = UDim2.new(0.6, 0, 0.15, 0)
+enterButton.Position = UDim2.new(0.2, 0, 0.58, 0)
 enterButton.Text = "✅ Ввести"
 enterButton.TextScaled = true
 enterButton.Font = Enum.Font.GothamBold
@@ -61,6 +64,39 @@ enterButton.MouseEnter:Connect(function()
 end)
 enterButton.MouseLeave:Connect(function()
 	enterButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+end)
+
+-- Кнопка "Получить ключ" для копирования ссылки
+local copyKeyButton = Instance.new("TextButton")
+copyKeyButton.Size = UDim2.new(0.6, 0, 0.15, 0)
+copyKeyButton.Position = UDim2.new(0.2, 0, 0.75, 0)
+copyKeyButton.Text = "Получить ключ"
+copyKeyButton.TextScaled = true
+copyKeyButton.Font = Enum.Font.GothamBold
+copyKeyButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+copyKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+copyKeyButton.Parent = keyFrame
+
+local copyKeyCorner = Instance.new("UICorner")
+copyKeyCorner.CornerRadius = UDim.new(0, 8)
+copyKeyCorner.Parent = copyKeyButton
+
+copyKeyButton.MouseEnter:Connect(function()
+	copyKeyButton.BackgroundColor3 = Color3.fromRGB(40, 180, 40)
+end)
+copyKeyButton.MouseLeave:Connect(function()
+	copyKeyButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+end)
+
+copyKeyButton.MouseButton1Click:Connect(function()
+	if setclipboard then
+		setclipboard("https://discord.gg/kpk9djRFaP")
+		copyKeyButton.Text = "Ссылка скопирована!"
+		wait(2)
+		copyKeyButton.Text = "Получить ключ"
+	else
+		warn("Функция setclipboard недоступна")
+	end
 end)
 
 --------------------------------------------------
