@@ -14,8 +14,8 @@ local Window = Rayfield:CreateWindow({
    LoadingSubtitle = "By Вася2",
    Theme = "Default",
 
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false,
+   DisableRayfieldPrompts = true,
+   DisableBuildWarnings = true,
 
    ConfigurationSaving = {
       Enabled = false,
