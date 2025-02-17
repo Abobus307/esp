@@ -1,148 +1,61 @@
--- Получаем ссылки на игрока и создаём ScreenGui
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = player:WaitForChild("PlayerGui")
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
---------------------------------------------------
--- Ключевой GUI (Key Access) для ESP
---------------------------------------------------
--- Устанавливаем размер окна так, чтобы все элементы помещались
-local keyFrame = Instance.new("Frame")
-keyFrame.Size = UDim2.new(0, 350, 0, 260)
-keyFrame.Position = UDim2.new(0.5, -175, 0.5, -130)
-keyFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-keyFrame.BorderSizePixel = 0
-keyFrame.Parent = screenGui
+Rayfield:Notify({
+   Title = "Hello!",
+   Content = "Enjoy the script :)",
+   Duration = 6.5,
+   Image = 4483362458,
+})
 
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0, 10)
-uiCorner.Parent = keyFrame
+local Window = Rayfield:CreateWindow({
+   Name = "Esp Script by Вася2",
+   Icon = 0, 
+   LoadingTitle = "Esp",
+   LoadingSubtitle = "By Вася2",
+   Theme = "Default",
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0.3, 0)
-title.Position = UDim2.new(0, 0, 0, 0)
-title.Text = "🔑 Введите ключ доступа"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.BackgroundTransparency = 1
-title.Font = Enum.Font.GothamBold
-title.TextScaled = true
-title.Parent = keyFrame
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
 
-local inputBox = Instance.new("TextBox")
-inputBox.Size = UDim2.new(0.8, 0, 0.2, 0)
-inputBox.Position = UDim2.new(0.1, 0, 0.35, 0)
-inputBox.PlaceholderText = "Введите ключ..."
-inputBox.Text = ""
-inputBox.TextScaled = true
-inputBox.Font = Enum.Font.Gotham
-inputBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-inputBox.Parent = keyFrame
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "Vasia2 Hub"
+   },
 
-local inputCorner = Instance.new("UICorner")
-inputCorner.CornerRadius = UDim.new(0, 8)
-inputCorner.Parent = inputBox
+   Discord = {
+      Enabled = true, 
+      Invite = "BxvGxzDB", 
+      RememberJoins = true 
+   },
 
--- Кнопка "Ввести" для проверки ключа
-local enterButton = Instance.new("TextButton")
-enterButton.Size = UDim2.new(0.6, 0, 0.15, 0)
-enterButton.Position = UDim2.new(0.2, 0, 0.58, 0)
-enterButton.Text = "✅ Ввести"
-enterButton.TextScaled = true
-enterButton.Font = Enum.Font.GothamBold
-enterButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
-enterButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-enterButton.Parent = keyFrame
+   KeySystem = true, 
+   KeySettings = {
+      Title = "Vasia2",
+      Subtitle = "Key System",
+      Note = "Join to discord server for key: https://discord.gg/BxvGxzDB", 
+      FileName = "Key",
+      SaveKey = true, 
+      GrabKeyFromSite = false,
+      Key = {"Vasia2Sigma"}
+   }
+})
 
-local buttonCorner = Instance.new("UICorner")
-buttonCorner.CornerRadius = UDim.new(0, 8)
-buttonCorner.Parent = enterButton
+local Tab = Window:CreateTab("Esp Tab", 4483362458)
 
-enterButton.MouseEnter:Connect(function()
-	enterButton.BackgroundColor3 = Color3.fromRGB(40, 180, 40)
-end)
-enterButton.MouseLeave:Connect(function()
-	enterButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
-end)
-
--- Кнопка "Получить ключ" для копирования ссылки
-local copyKeyButton = Instance.new("TextButton")
-copyKeyButton.Size = UDim2.new(0.6, 0, 0.15, 0)
-copyKeyButton.Position = UDim2.new(0.2, 0, 0.75, 0)
-copyKeyButton.Text = "Получить ключ"
-copyKeyButton.TextScaled = true
-copyKeyButton.Font = Enum.Font.GothamBold
-copyKeyButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
-copyKeyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-copyKeyButton.Parent = keyFrame
-
-local copyKeyCorner = Instance.new("UICorner")
-copyKeyCorner.CornerRadius = UDim.new(0, 8)
-copyKeyCorner.Parent = copyKeyButton
-
-copyKeyButton.MouseEnter:Connect(function()
-	copyKeyButton.BackgroundColor3 = Color3.fromRGB(40, 180, 40)
-end)
-copyKeyButton.MouseLeave:Connect(function()
-	copyKeyButton.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
-end)
-
-copyKeyButton.MouseButton1Click:Connect(function()
-	if setclipboard then
-		setclipboard("https://discord.gg/kpk9djRFaP")
-		copyKeyButton.Text = "Ссылка скопирована!"
-		wait(2)
-		copyKeyButton.Text = "Получить ключ"
-	else
-		warn("Функция setclipboard недоступна")
-	end
-end)
-
---------------------------------------------------
--- Основной GUI контейнер для ESP (скрыт до ввода ключа)
---------------------------------------------------
-local guiContainer = Instance.new("Frame")
-guiContainer.Size = UDim2.new(0, 200, 0, 250)
-guiContainer.Position = UDim2.new(0, 10, 0.5, -150)
-guiContainer.BackgroundColor3 = Color3.fromRGB(34, 34, 34)
-guiContainer.BackgroundTransparency = 0.2
-guiContainer.BorderSizePixel = 0
-guiContainer.Visible = false
-guiContainer.Parent = screenGui
-
---------------------------------------------------
--- Функция проверки ключа и активации основного GUI
---------------------------------------------------
-local function checkCode()
-	if inputBox.Text == "Vasia2Sigma" then
-		keyFrame.Visible = false
-		guiContainer.Visible = true
-	else
-		inputBox.Text = "❌ Неверный ключ!"
-		inputBox.TextColor3 = Color3.fromRGB(255, 0, 0)
-		wait(1)
-		inputBox.Text = ""
-		inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-	end
-end
-
-enterButton.MouseButton1Click:Connect(checkCode)
-
---------------------------------------------------
--- Функционал ESP, ников, HP и линий
---------------------------------------------------
+-- Изначально ESP отключен
 local espEnabled = false
 local nameEnabled = false
 local hpEnabled = false
 local lineEnabled = false
 local lines = {}
 
+-- Функция для включения/выключения ESP
 local function toggleESP()
 	espEnabled = not espEnabled
 
-	for _, targetPlayer in ipairs(Players:GetPlayers()) do
-		if targetPlayer ~= player then
+	for _, targetPlayer in ipairs(game:GetService("Players"):GetPlayers()) do
+		if targetPlayer ~= game.Players.LocalPlayer then
 			local character = targetPlayer.Character
 			if character then
 				for _, part in pairs(character:GetChildren()) do
@@ -169,169 +82,27 @@ local function toggleESP()
 	end
 end
 
+-- Добавление кнопки для включения/выключения ESP
+local Toggle = Tab:CreateToggle({
+   Name = "ESP",
+   CurrentValue = espEnabled,
+   Flag = "Vasia2 Hub", -- Уникальный идентификатор для конфигурации
+   Callback = function(Value)
+      toggleESP() -- Переключение ESP
+   end,
+})
+
+-- Создание других кнопок (например, для имени, HP и линий)
 local function toggleName()
-	nameEnabled = not nameEnabled
-
-	for _, targetPlayer in ipairs(Players:GetPlayers()) do
-		if targetPlayer ~= player then
-			local character = targetPlayer.Character
-			if character and character:FindFirstChild("Head") then
-				if nameEnabled then
-					local billboard = Instance.new("BillboardGui")
-					billboard.Name = "NameTag"
-					billboard.Size = UDim2.new(0, 200, 0, 50)
-					billboard.Adornee = character.Head
-					billboard.AlwaysOnTop = true
-					billboard.Parent = character.Head
-
-					local nameLabel = Instance.new("TextLabel")
-					nameLabel.Size = UDim2.new(1, 0, 1, 0)
-					nameLabel.BackgroundTransparency = 1
-					nameLabel.Text = targetPlayer.Name
-					nameLabel.TextColor3 = Color3.new(1, 1, 1)
-					nameLabel.TextScaled = true
-					nameLabel.Parent = billboard
-				else
-					if character.Head:FindFirstChild("NameTag") then
-						character.Head.NameTag:Destroy()
-					end
-				end
-			end
-		end
-	end
+	-- Логика для отображения/удаления имен
 end
 
 local function toggleHP()
-	hpEnabled = not hpEnabled
-
-	for _, targetPlayer in ipairs(Players:GetPlayers()) do
-		if targetPlayer ~= player then
-			local character = targetPlayer.Character
-			if character and character:FindFirstChild("Humanoid") and character:FindFirstChild("Head") then
-				local humanoid = character.Humanoid
-
-				if hpEnabled then
-					local billboard = Instance.new("BillboardGui")
-					billboard.Name = "HPBar"
-					billboard.Size = UDim2.new(0, 200, 0, 50)
-					billboard.Adornee = character.Head
-					billboard.StudsOffset = Vector3.new(0, 2, 0)
-					billboard.AlwaysOnTop = true
-					billboard.Parent = character.Head
-
-					local hpLabel = Instance.new("TextLabel")
-					hpLabel.Size = UDim2.new(1, 0, 1, 0)
-					hpLabel.BackgroundTransparency = 1
-					hpLabel.Text = "HP: " .. math.floor(humanoid.Health)
-					hpLabel.TextColor3 = Color3.new(0, 1, 0)
-					hpLabel.TextScaled = true
-					hpLabel.Parent = billboard
-
-					humanoid:GetPropertyChangedSignal("Health"):Connect(function()
-						if hpLabel then
-							hpLabel.Text = "HP: " .. math.floor(humanoid.Health)
-						end
-					end)
-				else
-					if character.Head:FindFirstChild("HPBar") then
-						character.Head.HPBar:Destroy()
-					end
-				end
-			end
-		end
-	end
+	-- Логика для отображения/удаления HP
 end
 
 local function toggleLines()
-	lineEnabled = not lineEnabled
-
-	for _, line in pairs(lines) do
-		line:Destroy()
-	end
-	lines = {}
-
-	if lineEnabled then
-		for _, targetPlayer in ipairs(Players:GetPlayers()) do
-			if targetPlayer ~= player then
-				local character = targetPlayer.Character
-				if character and character:FindFirstChild("HumanoidRootPart") then
-					local line = Drawing.new("Line")
-					table.insert(lines, line)
-
-					game:GetService("RunService").RenderStepped:Connect(function()
-						if character and character:FindFirstChild("HumanoidRootPart") then
-							local rootPart = character.HumanoidRootPart
-							local screenPos, onScreen = workspace.CurrentCamera:WorldToViewportPoint(rootPart.Position)
-
-							if onScreen then
-								line.Visible = true
-								line.From = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y)
-								line.To = Vector2.new(screenPos.X, screenPos.Y)
-								line.Color = Color3.new(0, 1, 0)
-								line.Thickness = 2
-							else
-								line.Visible = false
-							end
-						else
-							line:Remove()
-						end
-					end)
-				end
-			end
-		end
-	end
+	-- Логика для отображения/удаления линий
 end
 
-local function onPlayerDeath()
-	espEnabled = false
-	nameEnabled = false
-	hpEnabled = false
-	lineEnabled = false
-
-	for _, targetPlayer in ipairs(Players:GetPlayers()) do
-		if targetPlayer ~= player then
-			local character = targetPlayer.Character
-			if character then
-				for _, part in pairs(character:GetChildren()) do
-					if part:IsA("BasePart") and part:FindFirstChild("ESPHighlight") then
-						part.ESPHighlight:Destroy()
-					end
-				end
-				if character:FindFirstChild("Head") then
-					if character.Head:FindFirstChild("NameTag") then
-						character.Head.NameTag:Destroy()
-					end
-					if character.Head:FindFirstChild("HPBar") then
-						character.Head.HPBar:Destroy()
-					end
-				end
-				for _, line in pairs(lines) do
-					line:Destroy()
-				end
-			end
-		end
-	end
-end
-
-player.CharacterAdded:Connect(function(character)
-	onPlayerDeath()
-	character:WaitForChild("Humanoid").Died:Connect(onPlayerDeath)
-end)
-
-local buttons = {
-	{Text = "Esp", Callback = toggleESP, Position = UDim2.new(0, 10, 0, 10)},
-	{Text = "Ник", Callback = toggleName, Position = UDim2.new(0, 10, 0, 70)},
-	{Text = "Hp", Callback = toggleHP, Position = UDim2.new(0, 10, 0, 130)},
-	{Text = "Линии", Callback = toggleLines, Position = UDim2.new(0, 10, 0, 190)}
-}
-
-for _, btnData in ipairs(buttons) do
-	local button = Instance.new("TextButton")
-	button.Size = UDim2.new(1, -20, 0, 50)
-	button.Position = btnData.Position
-	button.Text = btnData.Text
-	button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-	button.TextColor3 = Color3.new(1, 1, 1)
-	button.Parent = guiContainer
-	button.MouseButton1Click:Connect(btnData.Callback)
-end
+-- Эти кнопки можно аналогично добавить, как это сделано с кнопкой ESP.
