@@ -75,6 +75,42 @@ local Window = Rayfield:CreateWindow({
 
 local Tab = Window:CreateTab("Esp Tab", 4483362458)
 
+local Window = Rayfield:CreateWindow({
+   Name = "Esp Script by Вася2",
+   Icon = 0, 
+   LoadingTitle = "Esp",
+   LoadingSubtitle = "By Вася2",
+   Theme = "Default",
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
+
+   ConfigurationSaving = {
+      Enabled = false,
+      FolderName = nil,
+      FileName = "Vasia2 Hub"
+   },
+
+   Discord = {
+      Enabled = true, 
+      Invite = "BxvGxzDB", 
+      RememberJoins = true 
+   },
+
+   KeySystem = true, 
+   KeySettings = {
+      Title = "Vasia2",
+      Subtitle = "Key System",
+      Note = "Join to discord server for key: https://discord.gg/BxvGxzDB", 
+      FileName = "Key",
+      SaveKey = true, 
+      GrabKeyFromSite = false,
+      Key = {base64.decode("VmFzaWEyVG9w")} -- Расшифрованный ключ
+   }
+})
+
+local Tab = Window:CreateTab("Esp Tab", 4483362458)
+
 Rayfield:Notify({
    Title = "Hello!",
    Content = "Enjoy the script :)",
