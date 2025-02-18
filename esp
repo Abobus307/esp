@@ -1,5 +1,42 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+--[[ 
+  ██ ▄█▀▓██   ██▓ ▄▄▄       ███▄ ▄███▓ ███▄ ▄███▓▓█████  ██▀███  
+  ██▄█▒  ▒██  ██▒▒████▄    ▓██▒▀█▀ ██▒▓██▒▀█▀ ██▒▓█   ▀ ▓██ ▒ ██▒
+▓███▄░    ▒██ ██░▒██  ▀█▄  ▓██    ▓██░▓██    ▓██░▒███   ▓██ ░▄█ ▒
+▓██ █▄    ░ ▐██▓░░██▄▄▄▄██ ▒██    ▒██ ▒██    ▒██ ▒▓█  ▄ ▒██▀▀█▄  
+▒██▒ █▄   ░ ██▒▓░ ▓█   ▓██▒▒██▒   ░██▒▒██▒   ░██▒░▒████▒░██▓ ▒██▒
+▒ ▒▒ ▓▒    ██▒▒▒  ▒▒   ▓▒█░░ ▒░   ░  ░░ ▒░   ░  ░░░ ▒░ ░░ ▒▓ ░▒▓░
+░ ░▒ ▒░ ▓██ ░▒░   ▒   ▒▒ ░░  ░      ░░  ░      ░ ░ ░  ░  ░▒ ░ ▒░
+░ ░░ ░  ▒ ▒ ░░    ░   ▒   ░      ░   ░      ░      ░     ░░   ░ 
+░  ░    ░ ░           ░  ░       ░          ░      ░  ░   ░     
+        ░ ░                                                      
+
+Секретная система шифрования от Вася2
+]]
+
+local function _XOR_D3CRYPT(data, key)
+    local result = {}
+    for i = 1, #data do
+        local b = data:byte(i)
+        result[i] = string.char(bit32.bxor(b, key:byte((i-1) % #key + 1)))
+    end
+    return table.concat(result)
+end
+
+local _SECRET_DATA = {
+    [1] = 16, [2] = 65, [3] = 237, [4] = 49, 
+    [5] = 237, [6] = 243, [7] = 15, [8] = 26, [9] = 234
+}
+
+local function _GET_KEY()
+    local transformed = {}
+    for k, v in pairs(_SECRET_DATA) do
+        table.insert(transformed, (v + 0x17) % 256)
+    end
+    return _XOR_D3CRYPT(string.char(table.unpack(transformed)), "q9w!e8r^")
+end
+
 Rayfield:Notify({
    Title = "Hello!",
    Content = "Enjoy the script :)",
@@ -13,15 +50,6 @@ local Window = Rayfield:CreateWindow({
    LoadingTitle = "Esp",
    LoadingSubtitle = "By Вася2",
    Theme = "Default",
-
-   DisableRayfieldPrompts = true,
-   DisableBuildWarnings = true,
-
-   ConfigurationSaving = {
-      Enabled = false,
-      FolderName = nil,
-      FileName = "Vasia2 Hub"
-   },
 
    Discord = {
       Enabled = true, 
@@ -37,7 +65,7 @@ local Window = Rayfield:CreateWindow({
       FileName = "Key",
       SaveKey = true, 
       GrabKeyFromSite = false,
-      Key = {"Vasia2Top"} -- Very private
+      Key = {_GET_KEY()}
    }
 })
 
