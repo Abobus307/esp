@@ -71,7 +71,6 @@ local Window = Rayfield:CreateWindow({
 
 local Tab = Window:CreateTab("Esp Tab", 4483362458)
 
--- Initialization of toggles
 local espEnabled = false
 local nameEnabled = false
 local hpEnabled = false
@@ -110,7 +109,6 @@ local function toggleESP()
 	end
 end
 
--- Toggle for HP display
 local function toggleHP()
 	hpEnabled = not hpEnabled
 
@@ -185,7 +183,6 @@ local function toggleName()
 	end
 end
 
--- Toggle for Lines
 local function toggleLines()
 	lineEnabled = not lineEnabled
 
@@ -226,7 +223,6 @@ local function toggleLines()
 	end
 end
 
--- Add toggles for Name, HP, and Lines to the Rayfield window
 Tab:CreateToggle({
    Name = "Esp",
    CurrentValue = espEnabled,
