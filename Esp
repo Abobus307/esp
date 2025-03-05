@@ -13,6 +13,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 ░ ░░ ░  ▒ ▒ ░░    ░   ▒   ░      ░   ░      ░      ░     ░░   ░ 
 ░  ░    ░ ░           ░  ░       ░          ░      ░  ░   ░     
         ░ ░                                                      
+Секретная система шифрования от Вася2
 ]]
 
 local function _XOR_D3CRYPT(data, key)
