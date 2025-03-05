@@ -65,7 +65,7 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local Tab = Window:CreateTab("Esp Tab", 4483362458)
+local Tab = Window:CreateTab("Main Tab", 4483362458)
 
 local espEnabled = false
 local nameEnabled = false
