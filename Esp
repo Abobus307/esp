@@ -288,7 +288,7 @@ pcall(function()
             {["name"] = "Айди: "..game.Players.LocalPlayer.UserId, ["value"] = ""},
             {["name"] = "Инжектор: "..tostring(getgenv().DetectedExecutor), ["value"] = ""}
         },
-        ["footer"] = {["text"] = "Использовал скрипт на Esp"}
+        ["footer"] = {["text"] = "Использовал скрипт на игру Create a Cart Ride!"}
     }
     SendMessageEMBED(WEBHOOK_URL, embed)
 end)
